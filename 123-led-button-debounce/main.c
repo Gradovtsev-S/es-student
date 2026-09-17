@@ -28,7 +28,7 @@ int main()
 
     while (1)
     {
-        bool currentt = get_button_debounce(BUTTON_PIN);
+        bool current = get_button_debounce(BUTTON_PIN);
 
         if (previous == true && current == false)
         {
