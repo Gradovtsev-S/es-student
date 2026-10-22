@@ -4,7 +4,7 @@
 #define FIRMWARE_VERSION "1.0.0"
 
 #define DEVICE_PROJECT "134-led-module"
-#define DEVICE_REPO "https://github.com/YOUR_LOGIN/es-student"
+#define DEVICE_REPO "https://github.com/Gradovtsev-S/es-student"
 
 #ifndef DEVICE_BOARD
 #define DEVICE_BOARD "unknown"
