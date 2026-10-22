@@ -4,9 +4,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "hardware/regs/addressmap.h"
+#include "hardware/gpio.h"
 #include "pico/stdlib.h"
 #include "command.h"
 #include "device.h"
+#include "led.h"
+
+#define VECTOR_TABLE 0x10000100
+#define GPIO_IN_ADDR 0xd0000004
 
 int main(void);
 
@@ -118,4 +123,22 @@ void fw_info(void)
     }
 
     free(heap_variable);
+}
+
+void boot_info(void)
+{
+    const uint32_t *vectors = (const uint32_t *)VECTOR_TABLE;
+    uint32_t stack_top = vectors[0];
+    uint32_t reset_handler = vectors[1];
+
+    volatile uint32_t *gpio_in = (volatile uint32_t *)GPIO_IN_ADDR;
+    uint32_t level = (*gpio_in >> led_pin()) & 1u;
+
+    printf("%-14s 0x%08x\n", "vector table", (unsigned)VECTOR_TABLE);
+    printf("%-14s 0x%08x\n", "  stack top", (unsigned)stack_top);
+    printf("%-14s 0x%08x\n", "  reset", (unsigned)reset_handler);
+    printf("%-14s 0x%08x\n", "  reset (even)", (unsigned)(reset_handler & ~1u));
+    printf("%-14s 0x%08x\n", "gpio in", (unsigned)GPIO_IN_ADDR);
+    printf("%-14s %u\n", "  led bit", (unsigned)level);
+    printf("%-14s %u\n", "  gpio_get", (unsigned)gpio_get(led_pin()));
 }
