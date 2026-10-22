@@ -72,9 +72,8 @@ void mem_info(void)
     printf("  ram free    %8u for heap and %u for stack\n", heap, stack);
 }
 
-static void func_row(const char *name, uintptr_t address)
+static void func_row(const char *name, uintptr_t address, const uint16_t *code)
 {
-    uint16_t *code = (uint16_t *)(address & ~1u);
     printf("%-15s 0x%08x  0x%04x\n", name, (unsigned)address, (unsigned)*code);
 }
 
@@ -82,6 +81,9 @@ void fw_info(void)
 {
     data_variable++;
     bss_variable++;
+
+    uint16_t *main_code = (uint16_t *)((uintptr_t)main & ~1u);
+    uint16_t *fw_info_code = (uint16_t *)((uintptr_t)fw_info & ~1u);
 
     uint32_t stack_variable = 1946;
     uint32_t *heap_variable = malloc(sizeof(uint32_t));
@@ -93,8 +95,8 @@ void fw_info(void)
 
     printf("%-15s %-11s %s\n", "object", "address", "value");
 
-    func_row("main", (uintptr_t)main);
-    func_row("fw_info", (uintptr_t)fw_info);
+    func_row("main", (uintptr_t)main, main_code);
+    func_row("fw_info", (uintptr_t)fw_info, fw_info_code);
 
     printf("%-15s 0x%08x\n", "commands", (unsigned)(uintptr_t)commands);
 
